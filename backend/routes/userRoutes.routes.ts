@@ -22,7 +22,7 @@ router.post("/api/user/", async(req, res) =>{
     }
 })
 
-router.put("/api/user/", async(req, res) => {
+router.put("/api/user/:id", async(req, res) => {
     try {
         const empUpdate = await User.findOneAndUpdate({ empId: Number({userID: req.params.id}) }, 
             req.body,
@@ -36,7 +36,7 @@ router.put("/api/user/", async(req, res) => {
             data: empUpdate
         });
     }
-    catch (err) {
+    catch (err: any) {
         res.status(500).json({ message: err.message });
     }
 });
