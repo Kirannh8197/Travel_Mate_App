@@ -200,6 +200,32 @@ export const cancelBooking = async (bookingId: string) => {
   return booking;
 };
 
+//V's_new_start
+/**
+ * Confirm Booking (Payment Success)
+ */
+export const confirmBooking = async (bookingId: string) => {
+  if (!Types.ObjectId.isValid(bookingId)) {
+    throw new Error("Invalid Booking ID");
+  }
+
+  const booking = await Booking.findById(bookingId);
+
+  if (!booking) {
+    throw new Error("Booking not found");
+  }
+
+  if (booking.status !== "PENDING") {
+    throw new Error("Only pending bookings can be confirmed");
+  }
+
+  booking.status = "CONFIRMED";
+  await booking.save();
+
+  return booking;
+};
+//V's_new_end
+
 /**
  * Complete Booking (optional - admin/system)
  */
