@@ -9,7 +9,7 @@ export const SearchPage = () => {
 
     const fetchNearbyHotels = async () => {
         // In a real app we would have an axios instance, let's use fetch for simplicity
-        const response = await fetch(`http://localhost:5000/api/v1/hotels/nearby?lng=${lng}&lat=${lat}`);
+        const response = await fetch(`http://localhost:5000/api/hotel/nearby?lng=${lng}&lat=${lat}`);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -32,8 +32,8 @@ export const SearchPage = () => {
             {error && <p className="text-red-500">Error fetching hotels: {error.message}</p>}
 
             <div className="grid gap-4">
-                {data && data.length === 0 && <p>No hotels found near this location.</p>}
-                {data && data.map((hotel: any) => (
+                {data && data.data && data.data.length === 0 && <p>No hotels found near this location.</p>}
+                {data && data.data && data.data.map((hotel: any) => (
                     <div key={hotel._id || hotel.hotelId} className="border p-4 rounded-md shadow-sm">
                         <h2 className="text-lg font-semibold">{hotel.name}</h2>
                         <p className="text-sm">Distance: (Render geo distance here)</p>

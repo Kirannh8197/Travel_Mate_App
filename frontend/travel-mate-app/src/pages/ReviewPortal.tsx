@@ -9,7 +9,7 @@ export const ReviewPortal = () => {
     const [status, setStatus] = useState<string | null>(null);
 
     // Mock hotel to review
-    const hotelId = "1001"; // Using the custom numeric ID assumed by the backend
+    const hotelId = "6650"; // Using the custom numeric ID assumed by the backend
 
     const handleSubmitReview = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -19,12 +19,12 @@ export const ReviewPortal = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:5000/api/v1/reviews`, {
+            const response = await fetch(`http://localhost:5000/api/reviews`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     reviewId: Math.floor(Math.random() * 100000), // Random numeric ID for testing
-                    userId: user?.userId || "2001", // Custom numeric user ID
+                    userId: user?.userId || "6650", // Custom numeric user ID
                     hotelId: hotelId,
                     rating,
                     comment

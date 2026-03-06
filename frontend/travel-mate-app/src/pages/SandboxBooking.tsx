@@ -13,13 +13,13 @@ export const SandboxBooking = () => {
     const { user } = useUserStore(); // Using the Zustand store
 
     // Mock data for sandbox
-    const hotelId = "507f1f77bcf86cd799439011";
-    const roomTypeId = "507f1f77bcf86cd799439012";
-    const userId = user?._id || "507f1f77bcf86cd799439010";
+    const hotelId = "69aab842249b52585e108005";
+    const roomTypeId = "69aab842249b52585e108007";
+    const userId = user?._id || "69aab841249b52585e107ffd";
 
     const handleHoldRoom = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/v1/bookings/hold`, {
+            const response = await fetch(`http://localhost:5000/api/bookings`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -43,7 +43,7 @@ export const SandboxBooking = () => {
 
     const handleConfirmPayment = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/v1/bookings/${bookingId}/confirm`, {
+            const response = await fetch(`http://localhost:5000/api/bookings/${bookingId}/confirm`, {
                 method: 'PATCH',
             });
 
