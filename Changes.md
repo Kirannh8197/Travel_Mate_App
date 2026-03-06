@@ -7,6 +7,8 @@
 - `frontend/travel-mate-app/src/pages/SearchPage.tsx`: Logic UI component to test `$near` spatial queries.
 - `frontend/travel-mate-app/src/pages/SandboxBooking.tsx`: Logic UI component simulating the Two-Phase Commit transaction loop.
 - `frontend/travel-mate-app/src/pages/ReviewPortal.tsx`: Logic UI component validating internal auth state before API post.
+- `backend/src/services/cabBooking.service.ts`: Implemented `findNearbyCabs` utilizing GeoJSON `$near` logic and `bookCab` logic.
+- `backend/src/routes/cabBookingRoutes.routes.ts`: Created REST endpoints to expose the Cab service.
 
 ## Modified
 - `backend/src/models/hotelBookingSchema.model.ts`: Added PENDING status to the enum and a 15-minute TTL index for holds.

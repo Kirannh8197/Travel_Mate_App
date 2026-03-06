@@ -1,0 +1,10 @@
+src/services/cabBooking.service.ts(41,49): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(filter?: _QueryFilter<{ _id: ObjectId; name: string; email: string; password: string; $assertPopulated: <Paths = {}>(path: string | string[], values?: Partial<Paths> | undefined) => Omit<...> & Paths; ... 221 more ...; updatedAt: Date; }> | undefined, projection?: ProjectionType<...> | ... 1 more ... | undefined, options?: (QueryOptions<...> & Abortable) | ... 1 more ... | undefined): Query<...>', gave the following error.
+    Type 'string' is not assignable to type 'Condition<ApplyBasicQueryCasting<number>> | undefined'.
+  Overload 2 of 4, '(filter?: Query<any, any, {}, unknown, "find", Record<string, never>> | undefined, projection?: ProjectionType<IUser> | null | undefined, options?: (QueryOptions<...> & Abortable) | ... 1 more ... | undefined): Query<...>', gave the following error.
+    Object literal may only specify known properties, and 'userId' does not exist in type 'Query<any, any, {}, unknown, "find", Record<string, never>>'.
+src/services/cabBooking.service.ts(76,49): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(filter?: _QueryFilter<{ _id: ObjectId; name: string; email: string; password: string; $assertPopulated: <Paths = {}>(path: string | string[], values?: Partial<Paths> | undefined) => Omit<...> & Paths; ... 221 more ...; updatedAt: Date; }> | undefined, projection?: ProjectionType<...> | ... 1 more ... | undefined, options?: (QueryOptions<...> & Abortable) | ... 1 more ... | undefined): Query<...>', gave the following error.
+    Type 'string' is not assignable to type 'Condition<ApplyBasicQueryCasting<number>> | undefined'.
+  Overload 2 of 4, '(filter?: Query<any, any, {}, unknown, "find", Record<string, never>> | undefined, projection?: ProjectionType<IUser> | null | undefined, options?: (QueryOptions<...> & Abortable) | ... 1 more ... | undefined): Query<...>', gave the following error.
+    Object literal may only specify known properties, and 'userId' does not exist in type 'Query<any, any, {}, unknown, "find", Record<string, never>>'.
