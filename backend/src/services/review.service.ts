@@ -58,15 +58,15 @@ export const createReview = async (data: any) => {
     throw new Error(`Hotel with hotelId ${data.hotelId} not found.`);
   }
 
-  // Enforce trust system: Check for a COMPLETED booking
+  // Enforce trust system: Check for a COMPLETED or CONFIRMED booking
   const completedBooking = await Booking.findOne({
     user: userRecord._id,
     hotel: hotelRecord._id,
-    status: "COMPLETED"
+    status: { $in: ["COMPLETED", "CONFIRMED"] }
   });
 
   if (!completedBooking) {
-    throw new Error("Reviews can only be submitted for completed stays.");
+    throw new Error("Reviews can only be submitted for confirmed or completed stays.");
   }
 
   const reviewDataToSave = {

@@ -1,7 +1,8 @@
 import { Schema, model, Document } from 'mongoose';
 
 export enum UserRole {
-  CUSTOMER = "CUSTOMER",
+  USER = "USER",
+  HOTEL_HOST = "HOTEL_HOST",
   ADMIN = "ADMIN"
 }
 
@@ -21,7 +22,7 @@ const UserSchema = new Schema<IUser>(
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true, lowercase: true },
     password: { type: String, required: true },
-    role: { type: String, enum: Object.values(UserRole), default: UserRole.CUSTOMER },
+    role: { type: String, enum: Object.values(UserRole), default: UserRole.USER },
   },
   { timestamps: true } 
 );

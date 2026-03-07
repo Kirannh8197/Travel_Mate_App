@@ -1,6 +1,7 @@
-//V's_new_start
 import React, { useState } from 'react';
 import { useUserStore } from '../store/useUserStore';
+import { InteractiveStarRating } from '../components/ui/InteractiveStarRating';
+import { GlassCard } from '../components/ui/GlassCard';
 
 export const ReviewPortal = () => {
     const { isAuthenticated, user } = useUserStore();
@@ -41,54 +42,51 @@ export const ReviewPortal = () => {
     };
 
     return (
-        <div className="p-6 max-w-md mx-auto border rounded-xl mt-10">
-            <h1 className="text-xl font-bold mb-4">Review Portal</h1>
-            <p className="text-sm text-gray-600 mb-4">
-                Testing Trust System Logic for Hotel #{hotelId}
-            </p>
+        <div className="pt-24 min-h-screen px-4 pb-12 w-full max-w-lg mx-auto">
+            <GlassCard className="p-8 shadow-xl bg-white/80 border-gray-200">
+                <h1 className="text-3xl font-serif font-bold text-gray-900 mb-2">Review Portal</h1>
+                <p className="text-sm text-gray-500 mb-8 font-medium">
+                    Testing Trust System Logic for Hotel #{hotelId}
+                </p>
 
-            {status && (
-                <div className={`p-3 rounded mb-4 text-sm ${status.startsWith('Error') ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
-                    {status}
-                </div>
-            )}
+                {status && (
+                    <div className={`p-4 rounded-xl mb-6 text-sm font-bold shadow-sm ${status.startsWith('Error') ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-green-50 text-green-600 border border-green-100'}`}>
+                        {status}
+                    </div>
+                )}
 
-            {!isAuthenticated ? (
-                <div className="p-4 bg-yellow-50 text-yellow-800 rounded">
-                    Please log in via the global Zustand store to submit a review.
-                </div>
-            ) : (
-                <form onSubmit={handleSubmitReview} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Rating (1-5)</label>
-                        <input
-                            type="number"
-                            min="1" max="5"
-                            value={rating}
-                            onChange={e => setRating(Number(e.target.value))}
-                            className="w-full border p-2 rounded"
-                        />
+                {!isAuthenticated ? (
+                    <div className="p-4 bg-yellow-50 border border-yellow-100 text-yellow-800 rounded-xl font-medium shadow-sm">
+                        Please log in via the global Zustand store to submit a review.
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Comment</label>
-                        <textarea
-                            value={comment}
-                            onChange={e => setComment(e.target.value)}
-                            className="w-full border p-2 rounded"
-                            rows={3}
-                        />
-                    </div>
-                    <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded">
-                        Submit Review
-                    </button>
-                </form>
-            )}
+                ) : (
+                    <form onSubmit={handleSubmitReview} className="space-y-6">
+                        <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 flex flex-col items-center">
+                            <label className="block text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider">Tap to Rate</label>
+                            <InteractiveStarRating rating={rating} setRating={setRating} />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">Your Experience</label>
+                            <textarea
+                                value={comment}
+                                onChange={e => setComment(e.target.value)}
+                                placeholder="Describe your stay..."
+                                className="w-full bg-white border border-gray-200 p-4 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-[var(--tm-ethereal-purple)] focus:ring-4 focus:ring-[var(--tm-ethereal-purple)]/10 transition-all shadow-sm"
+                                rows={4}
+                            />
+                        </div>
+                        <button type="submit" className="w-full bg-gradient-to-r from-[var(--tm-ethereal-purple)] to-[var(--tm-deep-indigo)] text-white font-bold py-3.5 rounded-xl shadow-lg shadow-[var(--tm-ethereal-purple)]/30 hover:shadow-[var(--tm-ethereal-purple)]/50 transform hover:-translate-y-0.5 transition-all">
+                            Submit Verification
+                        </button>
+                    </form>
+                )}
 
             {/* 
  * Testing Checklist:
  * [ ] Verify the global Zustand store accurately restricts the UI form.
  * [ ] Verify the backend blocks the review if NO COMPLETED booking exists.
  */}
+            </GlassCard>
         </div>
     );
 };

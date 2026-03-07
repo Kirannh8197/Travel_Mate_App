@@ -19,6 +19,7 @@ export interface IHotel extends Document {
   amenities: string[];
   images: string[];
   averageRating: number;
+  status: 'PENDING_VERIFICATION' | 'APPROVED' | 'REJECTED';
 }
 
 const HotelSchema = new Schema<IHotel>(
@@ -50,6 +51,7 @@ const HotelSchema = new Schema<IHotel>(
       },
     },
     averageRating: { type: Number, default: 0 },
+    status: { type: String, enum: ['PENDING_VERIFICATION', 'APPROVED', 'REJECTED'], default: 'PENDING_VERIFICATION'}
   },
   { timestamps: true }
 );

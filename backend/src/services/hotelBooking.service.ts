@@ -67,7 +67,8 @@ import { RoomAvailability } from "../models/roomAvailabilitySchema.model";
 // };
 //V's_new_start
 /**
- * Create Booking Service (Transactional)
+ * Create Booking Service
+ * NOTE: Uses simple create() — no transactions (requires standalone-compatible MongoDB)
  */
 export const createBooking = async (
   userId: string,
@@ -92,63 +93,24 @@ export const createBooking = async (
     throw new Error("Hotel not found");
   }
 
-  const session = await mongoose.startSession();
-  session.startTransaction();
+  const diffTime = checkOut.getTime() - checkIn.getTime();
+  const totalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const totalAmount = totalDays * hotel.pricePerNight;
 
-  try {
-    const diffTime = checkOut.getTime() - checkIn.getTime();
-    const totalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const booking = await Booking.create({
+    user: userId,
+    hotel: hotelId,
+    roomType: roomTypeId,
+    checkInDate: checkIn,
+    checkOutDate: checkOut,
+    totalAmount,
+    status: "CONFIRMED",
+  });
 
-    const dates = [];
-    for (let i = 0; i < totalDays; i++) {
-      const d = new Date(checkInDate); // using the string to avoid mutating
-      d.setUTCHours(0, 0, 0, 0);       // enforce midnight UTC for dates
-      d.setUTCDate(d.getUTCDate() + i);
-      dates.push(d);
-    }
-
-    if (roomTypeId && Types.ObjectId.isValid(roomTypeId)) {
-      const availabilities = await RoomAvailability.find({
-        hotel: hotelId,
-        roomType: roomTypeId,
-        date: { $in: dates },
-        availableRooms: { $gt: 0 }
-      }).session(session);
-
-      if (availabilities.length !== dates.length) {
-        throw new Error("Rooms not available for all selected dates");
-      }
-
-      await RoomAvailability.updateMany(
-        { _id: { $in: availabilities.map(a => a._id) } },
-        { $inc: { availableRooms: -1 } },
-        { session }
-      );
-    }
-
-    const totalAmount = totalDays * hotel.pricePerNight;
-
-    const booking = await Booking.create([{
-      user: userId,
-      hotel: hotelId,
-      roomType: roomTypeId,
-      checkInDate: checkIn,
-      checkOutDate: checkOut,
-      totalAmount,
-      status: "PENDING",
-    }], { session });
-
-    await session.commitTransaction();
-    session.endSession();
-
-    return booking[0];
-  } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
-    throw error;
-  }
+  return booking;
 };
 //V's_new_end
+
 
 /**
  * Get All Bookings of a User

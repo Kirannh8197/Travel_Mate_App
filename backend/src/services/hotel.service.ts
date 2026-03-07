@@ -1,10 +1,19 @@
 import bcrypt from "bcryptjs";
 import { Hotel } from "../models/hotelSchema.model";
+export { Hotel }; // Re-export so routes can use it directly
+
 
 /**
  * Get All Hotels (Hides passwords)
  */
 export const getAllHotels = async () => {
+  return await Hotel.find({ status: 'APPROVED' }).select('-password');
+};
+
+/**
+ * ADMIN ONLY: Get All Hotels (all statuses)
+ */
+export const getAllHotelsAdmin = async () => {
   return await Hotel.find().select('-password');
 };
 
@@ -16,7 +25,8 @@ export const getHotelByHotelId = async (hotelId: number) => {
     throw new Error("Invalid Hotel ID");
   }
 
-  const hotel = await Hotel.findOne({ hotelId }).select('-password');
+  // Find hotel but ensure it is approved unless an Admin is querying (for now, simply restrict to Approved for public view)
+  const hotel = await Hotel.findOne({ hotelId, status: 'APPROVED' }).select('-password');
 
   if (!hotel) {
     throw new Error("Hotel not found");
@@ -41,7 +51,7 @@ export const createHotel = async (data: any) => {
   data.password = await bcrypt.hash(data.password, salt);
 
   const hotel = await Hotel.create(data);
-  
+
   // Remove password before returning
   const { password, ...hotelWithoutPassword } = hotel.toObject();
   return hotelWithoutPassword;
@@ -114,17 +124,56 @@ export const deleteHotelByHotelId = async (hotelId: number) => {
 };
 
 /**
- * Find Hotels Near a Specific Location
+ * Find Hotels Near a Specific Location with advanced filters
  */
-export const getHotelsNearLocation = async (lng: number, lat: number, maxDistance: number = 10000) => {
-  const hotels = await Hotel.find({
+export const getHotelsNearLocation = async (lng: number, lat: number, maxDistance: number = 10000, options?: any) => {
+  const query: any = {
     location: {
       $near: {
         $geometry: { type: "Point", coordinates: [lng, lat] },
         $maxDistance: maxDistance
       }
     }
-  }).select('-password');
+  };
 
+  // Advanced Filters
+  if (options) {
+    if (options.minPrice !== undefined || options.maxPrice !== undefined) {
+      query.pricePerNight = {};
+      if (options.minPrice !== undefined && !isNaN(options.minPrice)) query.pricePerNight.$gte = options.minPrice;
+      if (options.maxPrice !== undefined && !isNaN(options.maxPrice)) query.pricePerNight.$lte = options.maxPrice;
+    }
+
+    if (options.amenities && options.amenities.length > 0) {
+      // Find hotels that have ALL the requested amenities
+      query.amenities = { $all: options.amenities };
+    }
+  }
+
+  // Only show APPROVED hotels to public users
+  query.status = 'APPROVED';
+
+  const hotels = await Hotel.find(query).select('-password');
   return hotels;
+};
+
+/**
+ * ADMIN ONLY: Approve or Reject a Hotel
+ */
+export const updateHotelStatus = async (hotelId: number, status: 'APPROVED' | 'REJECTED') => {
+  if (isNaN(hotelId)) {
+    throw new Error("Invalid Hotel ID");
+  }
+
+  const updatedHotel = await Hotel.findOneAndUpdate(
+    { hotelId: hotelId },
+    { status: status },
+    { new: true, runValidators: true }
+  ).select('-password');
+
+  if (!updatedHotel) {
+    throw new Error("Hotel not found");
+  }
+
+  return updatedHotel;
 };

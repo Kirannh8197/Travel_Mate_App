@@ -31,12 +31,12 @@ export const createUser = async (data: any) => {
     throw new Error("Email already exists");
   }
 
-  // Hash password
   const hashedPassword = await bcrypt.hash(data.password, 10);
 
   const user = await User.create({...data,password: hashedPassword,});
-
-  return user;
+  
+  const { password, ...userWithoutPassword } = user.toObject();
+  return userWithoutPassword;
 };
 
 
@@ -56,7 +56,8 @@ export const loginUser = async (email: string, password: string) => {
     throw new Error("Invalid credentials");
   }
 
-  return user;
+  const { password: _, ...userWithoutPassword } = user.toObject();
+  return userWithoutPassword;
 };
 
  // Update User 
